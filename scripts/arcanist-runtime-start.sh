@@ -3,12 +3,12 @@ set -euo pipefail
 
 if [ -d /home/mambauser/jupyterlab_cache/node_modules ]; then
   mkdir -p /home/mambauser/jupyterlab/node_modules
-  rsync -ar /home/mambauser/jupyterlab_cache/node_modules/. /home/mambauser/jupyterlab/node_modules
+  micromamba run rsync -ar /home/mambauser/jupyterlab_cache/node_modules/. /home/mambauser/jupyterlab/node_modules
 fi
 
 bash scripts/arcanist-runtime-seed.sh
 
-exec jupyter lab \
+exec micromamba run jupyter lab \
   --dev-mode \
   --extensions-in-dev-mode \
   --watch \

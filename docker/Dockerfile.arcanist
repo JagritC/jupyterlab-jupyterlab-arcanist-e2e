@@ -33,7 +33,7 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER . .
 RUN micromamba run yarn install
 
 WORKDIR /home/$MAMBA_USER/jupyterlab
-RUN rsync -ar /home/$MAMBA_USER/jupyterlab_cache/. /home/$MAMBA_USER/jupyterlab && \
+RUN micromamba run rsync -ar /home/$MAMBA_USER/jupyterlab_cache/. /home/$MAMBA_USER/jupyterlab && \
     micromamba run python -m pip install -e "."
 
 EXPOSE 8888
