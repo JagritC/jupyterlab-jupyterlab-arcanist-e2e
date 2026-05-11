@@ -2,8 +2,11 @@ services:
   web:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.arcanist
       target: dev
+      args:
+        NEW_MAMBA_USER_ID: "1000"
+        NEW_MAMBA_USER_GID: "1000"
     command: bash scripts/arcanist-runtime-start.sh
     init: true
     ports:

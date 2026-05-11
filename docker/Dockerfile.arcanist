@@ -1,0 +1,39 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
+FROM --platform=linux/amd64 mambaorg/micromamba:1.5.5-jammy AS dev
+
+ARG NEW_MAMBA_USER_ID=1000
+ARG NEW_MAMBA_USER_GID=1000
+
+USER root
+RUN if [ "$(id ${MAMBA_USER} -u)" != "${NEW_MAMBA_USER_ID}" ]; then \
+      usermod "-u ${NEW_MAMBA_USER_ID}" "${MAMBA_USER}"; \
+    fi && \
+    if [ "$(id ${MAMBA_USER} -g)" != "${NEW_MAMBA_USER_GID}" ]; then \
+      groupmod -o -g "${NEW_MAMBA_USER_GID}" "${MAMBA_USER}" && \
+      usermod -g "${NEW_MAMBA_USER_GID}" "${MAMBA_USER}"; \
+    fi
+
+USER $MAMBA_USER
+ENV PATH="/home/${MAMBA_USER}/.local/bin:${PATH}"
+ENV EDITOR=nano
+
+WORKDIR /home/$MAMBA_USER/jupyterlab_cache
+
+RUN micromamba install -c nodefaults -c conda-forge -yn base nodejs=20.1 yarn=3 git python=3 less vim nano rsync && \
+    micromamba clean -a -y
+
+COPY --chown=$MAMBA_USER:$MAMBA_USER pyproject.toml LICENSE README.md ./
+COPY --chown=$MAMBA_USER:$MAMBA_USER jupyterlab/_version.py ./jupyterlab/_version.py
+
+RUN SKIP_JUPYTER_BUILDER=1 micromamba run python -m pip install -e ".[dev,test]"
+
+COPY --chown=$MAMBA_USER:$MAMBA_USER . .
+RUN micromamba run yarn install
+
+WORKDIR /home/$MAMBA_USER/jupyterlab
+RUN rsync -ar /home/$MAMBA_USER/jupyterlab_cache/. /home/$MAMBA_USER/jupyterlab && \
+    micromamba run python -m pip install -e "."
+
+EXPOSE 8888
