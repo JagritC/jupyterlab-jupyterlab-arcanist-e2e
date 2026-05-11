@@ -1,0 +1,27 @@
+{
+  "appRuntime": {
+    "kind": "web",
+    "runner": "docker",
+    "entry": {
+      "type": "compose",
+      "files": ["docker-compose.arcanist.yml"],
+      "service": "web"
+    },
+    "url": {
+      "hostPort": 8888,
+      "path": "/lab"
+    },
+    "ready": {
+      "path": "/lab",
+      "timeoutSeconds": 1800
+    },
+    "open": {
+      "path": "/lab"
+    },
+    "e2e": {
+      "testCommand": "COMPOSE_PROJECT_NAME=arcanist-preview-$ARCANIST_APP_HOST_PORT docker compose -f docker-compose.arcanist.yml exec -T web bash scripts/arcanist-runtime-smoke.sh",
+      "seedCommand": "COMPOSE_PROJECT_NAME=arcanist-preview-$ARCANIST_APP_HOST_PORT docker compose -f docker-compose.arcanist.yml exec -T web bash scripts/arcanist-runtime-seed.sh",
+      "resetCommand": "COMPOSE_PROJECT_NAME=arcanist-preview-$ARCANIST_APP_HOST_PORT docker compose -f docker-compose.arcanist.yml exec -T web bash scripts/arcanist-runtime-seed.sh"
+    }
+  }
+}
