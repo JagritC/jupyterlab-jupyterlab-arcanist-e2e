@@ -106,6 +106,7 @@ export namespace DockPanelSvg {
     createTabBar(): TabBarSvg<Widget> {
       const bar = new TabBarSvg<Widget>();
       bar.addClass('lm-DockPanel-tabBar');
+      bar.addClass('jp-scrollbar-tiny');
       return bar;
     }
   }

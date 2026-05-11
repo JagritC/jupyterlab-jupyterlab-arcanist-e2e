@@ -27,6 +27,8 @@
 
 .lm-DockPanel-tabBar[data-orientation='horizontal'],
 .lm-TabPanel-tabBar[data-orientation='horizontal'] {
+  overflow-x: auto;
+  overflow-y: hidden;
   min-height: calc(
     var(--jp-private-horizontal-tab-height) + 2 * var(--jp-border-width)
   );
@@ -58,6 +60,10 @@
   border: var(--jp-border-width) solid var(--jp-border-color1);
   border-bottom: none;
   position: relative;
+}
+
+.lm-DockPanel-tabBar[data-orientation='horizontal'] .lm-TabBar-tab {
+  flex-shrink: 0;
 }
 
 .lm-DockPanel-tabBar .lm-TabBar-tab:focus-visible,
